@@ -19,7 +19,7 @@ const openUpdateModal = (data) => {
 };
 
 const handleSubmit = () => {
-  if (store.selectedPenyakit) {
+  if (store.selectedGejala) {
     store.updateGejala();
   } else {
     store.submitGejala();
@@ -111,7 +111,7 @@ onMounted(() => {
               </button>
               <button
                 class="btn btn-error"
-                @click="() => store.deletePenyakit(data.kode_gejala)"
+                @click="() => store.deleteGejala(data.kode_gejala)"
               >
                 Delete
               </button>

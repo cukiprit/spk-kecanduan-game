@@ -1,4 +1,6 @@
 <script setup>
+import auth from "@/stores/auth";
+import { computed, ref } from "vue";
 import { RouterLink } from "vue-router";
 
 const routes = [
@@ -22,31 +24,69 @@ const routes = [
     route: "/prediksi",
     name: "Prediksi",
   },
+  {
+    route: "/login",
+    name: "Login",
+  },
 ];
+
+const useAuth = auth();
+
+const isMenuOpen = ref(false);
+
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value;
+};
+
+const isAuthenticated = computed(() => !!sessionStorage.getItem("token"));
 </script>
 
 <template>
   <div class="navbar bg-base-100">
     <div class="flex-1">
-      <RouterLink class="btn btn-ghost text-xl" to="/">
-        Sistem Pengambilan Keputusan
-      </RouterLink>
+      <RouterLink class="btn btn-ghost text-xl" to="/"> SPK </RouterLink>
     </div>
-    <div class="flex-none">
-      <ul class="menu menu-horizontal px-1">
-        <li v-for="route in routes">
-          <RouterLink :to="route.route">{{ route.name }}</RouterLink>
+    <div class="flex-none lg:hidden">
+      <button class="btn btn-square btn-ghost" @click="toggleMenu">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16m-7 6h7"
+          />
+        </svg>
+      </button>
+    </div>
+    <div
+      :class="{ hidden: !isMenuOpen, flex: isMenuOpen }"
+      class="lg:flex lg:items-center lg:w-auto"
+    >
+      <ul
+        class="menu menu-vertical mt-3 p-2 shadow bg-base-100 rounded-box w-52 lg:menu-horizontal lg:flex lg:p-0 lg:shadow-none lg:bg-transparent lg:mt-0 lg:w-auto"
+      >
+        <li v-for="route in routes" :key="route.name">
+          <span
+            v-if="
+              isAuthenticated ||
+              route.name === 'Login' ||
+              route.name === 'Register'
+            "
+          >
+            <RouterLink :to="route.route">{{ route.name }}</RouterLink>
+          </span>
         </li>
 
-        <!-- <li>
-          <details>
-            <summary>Parent</summary>
-            <ul class="p-2 bg-base-100 rounded-t-none">
-              <li><a>Link 1</a></li>
-              <li><a>Link 2</a></li>
-            </ul>
-          </details>
-        </li> -->
+        <li v-if="isAuthenticated">
+          <button @click="useAuth.logout">Logout</button>
+        </li>
+
         <li>
           <label class="swap swap-rotate">
             <!-- this hidden checkbox controls the state -->

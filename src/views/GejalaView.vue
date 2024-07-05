@@ -60,6 +60,7 @@ onMounted(() => {
           <textarea
             class="textarea textarea-bordered"
             v-model="store.nama_gejala"
+            placeholder="Type here"
           ></textarea>
         </div>
         <div class="form-control">
@@ -74,19 +75,23 @@ onMounted(() => {
     </form>
   </dialog>
 
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <h3 class="text-2xl font-bold my-3">Data Gejala</h3>
+  <div class="container mx-auto px-4">
+    <h3 class="text-2xl font-bold my-3 text-center md:text-left">
+      Data Gejala
+    </h3>
 
-    <button
-      type="button"
-      class="btn btn-primary text-light my-5"
-      @click="openAddModal"
-    >
-      Tambah Data
-    </button>
+    <div class="flex justify-center md:justify-start my-5">
+      <button
+        type="button"
+        class="btn btn-primary text-light my-5"
+        @click="openAddModal"
+      >
+        Tambah Data
+      </button>
+    </div>
 
     <div class="overflow-x-auto">
-      <table class="table">
+      <table class="table w-full">
         <thead>
           <tr>
             <th>Kode Gejala</th>
@@ -103,18 +108,20 @@ onMounted(() => {
             <th>{{ data.kode_gejala }}</th>
             <td>{{ data.nama_gejala }}</td>
             <td>
-              <button
-                class="btn btn-warning mr-3"
-                @click="openUpdateModal(data)"
-              >
-                Update
-              </button>
-              <button
-                class="btn btn-error"
-                @click="() => store.deleteGejala(data.kode_gejala)"
-              >
-                Delete
-              </button>
+              <div class="flex space-x-2">
+                <button
+                  class="btn btn-warning mr-3"
+                  @click="openUpdateModal(data)"
+                >
+                  Update
+                </button>
+                <button
+                  class="btn btn-error"
+                  @click="() => store.deleteGejala(data.kode_gejala)"
+                >
+                  Delete
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>

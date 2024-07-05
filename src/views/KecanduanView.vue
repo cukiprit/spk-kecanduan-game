@@ -75,24 +75,26 @@ onMounted(() => {
     </form>
   </dialog>
 
-  <div class="container mx-auto">
-    <h3 class="text-2xl font-bold my-3">Data Kecanduan</h3>
+  <div class="container mx-auto px-4">
+    <h3 class="text-2xl font-bold my-3 text-center md:text-left">
+      Data Kecanduan
+    </h3>
 
-    <button
-      type="button"
-      class="btn btn-primary text-light my-5"
-      @click="openAddModal"
-    >
-      Tambah Data
-    </button>
+    <div class="flex justify-center md:justify-start my-5">
+      <button
+        type="button"
+        class="btn btn-primary text-light"
+        @click="openAddModal"
+      >
+        Tambah Data
+      </button>
+    </div>
 
     <div class="overflow-x-auto">
-      <table class="table">
+      <table class="table w-full">
         <!-- head -->
         <thead>
           <tr>
-            <th></th>
-            <th></th>
             <th></th>
             <th>Kode Kecanduan</th>
             <th>Perilaku Kecanduan</th>
@@ -107,23 +109,23 @@ onMounted(() => {
             :key="data.kode_kecanduan"
           >
             <th></th>
-            <th></th>
-            <th></th>
             <th>{{ data.kode_kecanduan }}</th>
             <td>{{ data.perilaku_kecanduan }}</td>
             <td>
-              <button
-                class="btn btn-warning mr-3"
-                @click="openUpdateModal(data)"
-              >
-                Update
-              </button>
-              <button
-                class="btn btn-error"
-                @click="() => store.deletePenyakit(data.kode_kecanduan)"
-              >
-                Delete
-              </button>
+              <div class="flex space-x-2">
+                <button
+                  class="btn btn-warning mr-3"
+                  @click="openUpdateModal(data)"
+                >
+                  Update
+                </button>
+                <button
+                  class="btn btn-error"
+                  @click="() => store.deletePenyakit(data.kode_kecanduan)"
+                >
+                  Delete
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>

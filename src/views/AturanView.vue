@@ -75,6 +75,7 @@ const handleSubmit = () => {
             type="text"
             v-model="store.selectedDetail.perilaku_kecanduan"
             class="input input-bordered w-full"
+            placeholder="Type here"
           />
         </div>
 
@@ -128,14 +129,17 @@ const handleSubmit = () => {
     </form>
   </dialog>
 
-  <div class="container mx-auto">
-    <h1 class="text-2xl font-bold my-3">Aturan</h1>
-    <button class="btn btn-primary mb-5" @click="openAddModal">
-      Tambah Aturan
-    </button>
+  <div class="container mx-auto px-4">
+    <h1 class="text-2xl font-bold my-3 text-center md:text-left">Aturan</h1>
+
+    <div class="flex justify-center md:justify-start my-5">
+      <button class="btn btn-primary mb-5" @click="openAddModal">
+        Tambah Aturan
+      </button>
+    </div>
 
     <div class="overflow-x-auto">
-      <table class="table">
+      <table class="table w-full">
         <thead>
           <tr>
             <th>Kode Kecanduan</th>
@@ -154,13 +158,15 @@ const handleSubmit = () => {
             <td>{{ data.perilaku_kecanduan }}</td>
             <td>{{ data.kode_gejala }}</td>
             <td>
-              <button
-                class="btn btn-warning mr-3"
-                @click="openUpdateModal(data.kode_kecanduan)"
-              >
-                Update
-              </button>
-              <button class="btn btn-error">Delete</button>
+              <div class="flex space-x-2">
+                <button
+                  class="btn btn-warning mr-3"
+                  @click="openUpdateModal(data.kode_kecanduan)"
+                >
+                  Update
+                </button>
+                <button class="btn btn-error">Delete</button>
+              </div>
             </td>
           </tr>
         </tbody>

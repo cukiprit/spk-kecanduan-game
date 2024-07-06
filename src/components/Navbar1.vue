@@ -1,7 +1,7 @@
 <script setup>
 import auth from "@/stores/auth";
 import { RouterView } from "vue-router";
-import { computed } from "vue";
+import { computed, onMounted, onUnmounted } from "vue";
 import { RouterLink } from "vue-router";
 
 const routes = [

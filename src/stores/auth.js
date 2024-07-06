@@ -31,6 +31,7 @@ const auth = defineStore("auth", {
         if (result.token) {
           sessionStorage.setItem("token", result.token);
           this.token = result.token;
+          window.dispatchEvent(new Event("storage"));
         }
       } catch (err) {
         console.error(err.message);
@@ -61,6 +62,7 @@ const auth = defineStore("auth", {
     logout: function () {
       sessionStorage.removeItem("token");
       this.token = null;
+      window.dispatchEvent(new Event("storage"));
       this.username = "";
       this.password = "";
       this.confirmPassword = "";

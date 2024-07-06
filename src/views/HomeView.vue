@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-center items-center">
+  <div class="flex flex-col justify-center items-center px-4">
     <h1 class="text-3xl font-bold text-center my-5">
       Sistem Pengambilan Keputusan Kecanduan Bermain Game
     </h1>

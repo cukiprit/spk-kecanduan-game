@@ -6,6 +6,7 @@ const store = useAturanStore();
 
 onMounted(() => {
   store.fetchAturan();
+  store.fetchKecanduan();
   store.fetchGejala();
 });
 
@@ -24,10 +25,15 @@ const openUpdateModal = async (kode_kecanduan) => {
 };
 
 const handleSubmit = () => {
+  const data = {
+    kode_gejala: store.selectedValues,
+    kode_kecanduan: store.selectedDetail.kode_kecanduan,
+  };
+
   if (store.mode === "add") {
-    // Handle add logic
+    store.addAturan(data);
   } else if (store.mode === "update") {
-    // Handle update logic
+    store.updateAturan(data);
   }
 };
 </script>
@@ -47,10 +53,11 @@ const handleSubmit = () => {
           <select
             v-if="store.mode === 'add'"
             class="select select-bordered w-full"
+            v-model="store.selectedDetail.kode_kecanduan"
           >
             <option disabled selected>Select Kode Kecanduan</option>
             <option
-              v-for="item in store.aturan"
+              v-for="item in store.kecanduan"
               :key="item.kode_kecanduan"
               :value="item.kode_kecanduan"
             >
@@ -64,18 +71,6 @@ const handleSubmit = () => {
             v-model="store.selectedDetail.kode_kecanduan"
             disabled
             class="input input-bordered w-full"
-          />
-        </div>
-
-        <div class="form-control mb-5">
-          <div class="label">
-            <span class="label-text">Perilaku Kecanduan</span>
-          </div>
-          <input
-            type="text"
-            v-model="store.selectedDetail.perilaku_kecanduan"
-            class="input input-bordered w-full"
-            placeholder="Type here"
           />
         </div>
 
@@ -165,7 +160,12 @@ const handleSubmit = () => {
                 >
                   Update
                 </button>
-                <button class="btn btn-error">Delete</button>
+                <button
+                  class="btn btn-error"
+                  @click="store.deleteAturan(data.kode_kecanduan)"
+                >
+                  Delete
+                </button>
               </div>
             </td>
           </tr>

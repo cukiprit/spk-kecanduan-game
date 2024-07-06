@@ -25,11 +25,13 @@ const usePenyakitStore = defineStore({
       }
     },
     submitPenyakit: async function () {
+      const token = sessionStorage.getItem("token");
       try {
         const response = await fetch("http://localhost:3000/kecanduan", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             kode_kecanduan: this.kode_kecanduan,
@@ -48,16 +50,32 @@ const usePenyakitStore = defineStore({
       }
     },
     deletePenyakit: async function (id) {
+      const token = sessionStorage.getItem("token");
+
       try {
-        await fetch(`http://localhost:3000/kecanduan/${id}`, {
+        const response = await fetch(`http://localhost:3000/kecanduan/${id}`, {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
-        this.kecanduan = this.kecanduan.filter((p) => p.kode_kecanduan !== id);
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+          this.kecanduan = this.kecanduan.filter(
+            (p) => p.kode_kecanduan !== id
+          );
+        }
+
+        this.fetchPenyakit();
       } catch (err) {
         console.error(`Error deleting kecanduan: ${err.message}`);
       }
     },
     updatePenyakit: async function () {
+      const token = sessionStorage.getItem("token");
+
       try {
         await fetch(
           `http://localhost:3000/kecanduan/${this.selectedKecanduan.kode_kecanduan}`,
@@ -65,6 +83,7 @@ const usePenyakitStore = defineStore({
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
               perilaku_kecanduan: this.perilaku_kecanduan,

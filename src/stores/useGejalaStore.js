@@ -25,11 +25,13 @@ const useGejalaStore = defineStore({
       }
     },
     submitGejala: async function () {
+      const token = sessionStorage.getItem("token");
       try {
         const response = await fetch("http://localhost:3000/gejala", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             kode_gejala: this.kode_gejala,
@@ -48,16 +50,30 @@ const useGejalaStore = defineStore({
       }
     },
     deleteGejala: async function (id) {
+      const token = sessionStorage.getItem("token");
+
       try {
-        await fetch(`http://localhost:3000/gejala/${id}`, {
+        const response = await fetch(`http://localhost:3000/gejala/${id}`, {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
-        this.gejala = this.gejala.filter((p) => p.kode_gejala !== id);
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+          this.gejala = this.gejala.filter((p) => p.kode_gejala !== id);
+        }
+
+        this.fetchGejala();
       } catch (err) {
         console.error(`Error deleting gejala: ${err.message}`);
       }
     },
     updateGejala: async function () {
+      const token = sessionStorage.getItem("token");
+
       try {
         await fetch(
           `http://localhost:3000/gejala/${this.selectedGejala.kode_gejala}`,
@@ -65,6 +81,7 @@ const useGejalaStore = defineStore({
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
               nama_gejala: this.nama_gejala,

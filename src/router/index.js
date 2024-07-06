@@ -3,6 +3,8 @@ import AturanView from "@/views/AturanView.vue";
 import HomeView from "@/views/HomeView.vue";
 import KecanduanView from "@/views/KecanduanView.vue";
 import GejalaView from "@/views/GejalaView.vue";
+import auth from "@/stores/auth";
+import PrediksiView from "@/views/PrediksiView.vue";
 
 const routes = [
   {
@@ -26,6 +28,11 @@ const routes = [
     component: AturanView,
   },
   {
+    path: "/prediksi",
+    name: "prediksi",
+    component: PrediksiView,
+  },
+  {
     path: "/login",
     name: "login",
     component: () => import("@/views/LoginView.vue"),
@@ -43,15 +50,15 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  const authStore = auth();
   const isAuthenticated = !!sessionStorage.getItem("token");
 
-  if (
-    to.name !== "home" &&
-    to.name !== "login" &&
-    to.name !== "register" &&
-    !isAuthenticated
-  ) {
-    next({ name: "login" });
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (!isAuthenticated) {
+      next("/login");
+    } else {
+      next();
+    }
   } else {
     next();
   }

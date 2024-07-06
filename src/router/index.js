@@ -5,6 +5,7 @@ import KecanduanView from "@/views/KecanduanView.vue";
 import GejalaView from "@/views/GejalaView.vue";
 import auth from "@/stores/auth";
 import PrediksiView from "@/views/PrediksiView.vue";
+import ResultView from "@/views/ResultView.vue";
 
 const routes = [
   {
@@ -31,6 +32,12 @@ const routes = [
     path: "/prediksi",
     name: "prediksi",
     component: PrediksiView,
+  },
+  {
+    path: "/result",
+    name: "result",
+    component: ResultView,
+    props: true,
   },
   {
     path: "/login",

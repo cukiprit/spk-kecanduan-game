@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
+import auth from "./auth";
 
 const useQuisionerStore = defineStore("quisioner", {
   state: () => ({
     quisioner: [],
     aturan: [],
-    answers: {},
+    answers: [],
     currentPart: 0,
     result: [],
     highestResult: null,
@@ -87,6 +88,26 @@ const useQuisionerStore = defineStore("quisioner", {
         result[0]
       );
     },
+    async saveResult(result) {
+      const useAuth = auth();
+
+      try {
+        const response = await fetch("http://127.0.0.1:3000/hasil", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${useAuth.token}`,
+          },
+          body: JSON.stringify(result),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to save result!");
+        }
+      } catch (err) {
+        console.error(`Error: ${err.message}`);
+      }
+    },
     nextPart() {
       if (this.currentPart < Math.ceil(this.quisioner.length / 7) - 1) {
         this.currentPart++;
@@ -108,6 +129,14 @@ const useQuisionerStore = defineStore("quisioner", {
       const start = this.currentPart * 7;
       const end = start + 7;
       return this.quisioner.slice(start, end);
+    },
+    resetForm() {
+      this.quisioner = [];
+      this.aturan = [];
+      this.answer = [];
+      this.currentPart = 0;
+      this.result = [];
+      this.highestResult = null;
     },
   },
 });

@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import auth from "./auth";
 
 const useGejalaStore = defineStore({
   id: "gejala",
@@ -25,13 +26,14 @@ const useGejalaStore = defineStore({
       }
     },
     submitGejala: async function () {
-      const token = sessionStorage.getItem("token");
+      const useAuth = auth();
+
       try {
         const response = await fetch("http://localhost:3000/gejala", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${useAuth.token}`,
           },
           body: JSON.stringify({
             kode_gejala: this.kode_gejala,
@@ -50,13 +52,13 @@ const useGejalaStore = defineStore({
       }
     },
     deleteGejala: async function (id) {
-      const token = sessionStorage.getItem("token");
+      const useAuth = auth();
 
       try {
         const response = await fetch(`http://localhost:3000/gejala/${id}`, {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${useAuth.token}`,
           },
         });
 
@@ -72,7 +74,7 @@ const useGejalaStore = defineStore({
       }
     },
     updateGejala: async function () {
-      const token = sessionStorage.getItem("token");
+      const useAuth = auth();
 
       try {
         await fetch(
@@ -81,7 +83,7 @@ const useGejalaStore = defineStore({
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${useAuth.token}`,
             },
             body: JSON.stringify({
               nama_gejala: this.nama_gejala,

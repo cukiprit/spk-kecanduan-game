@@ -58,13 +58,14 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const authStore = auth();
-  const isAuthenticated = !!sessionStorage.getItem("token");
+  authStore.loadToken();
+  const isAuthenticated = !!authStore.token;
 
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!isAuthenticated) {
-      next("/login");
-    } else {
+  if (to.name !== "login" && !isAuthenticated) {
+    if (to.name === "home") {
       next();
+    } else {
+      next({ name: "login" });
     }
   } else {
     next();

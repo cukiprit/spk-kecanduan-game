@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import auth from "./auth";
 
 const usePenyakitStore = defineStore({
   id: "kecanduan",
@@ -25,13 +26,14 @@ const usePenyakitStore = defineStore({
       }
     },
     submitPenyakit: async function () {
-      const token = sessionStorage.getItem("token");
+      const useAuth = auth();
+
       try {
         const response = await fetch("http://localhost:3000/kecanduan", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${useAuth.token}`,
           },
           body: JSON.stringify({
             kode_kecanduan: this.kode_kecanduan,
@@ -50,13 +52,13 @@ const usePenyakitStore = defineStore({
       }
     },
     deletePenyakit: async function (id) {
-      const token = sessionStorage.getItem("token");
+      const useAuth = auth();
 
       try {
         const response = await fetch(`http://localhost:3000/kecanduan/${id}`, {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${useAuth.token}`,
           },
         });
 
@@ -74,7 +76,7 @@ const usePenyakitStore = defineStore({
       }
     },
     updatePenyakit: async function () {
-      const token = sessionStorage.getItem("token");
+      const useAuth = auth();
 
       try {
         await fetch(
@@ -83,7 +85,7 @@ const usePenyakitStore = defineStore({
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${useAuth.token}`,
             },
             body: JSON.stringify({
               perilaku_kecanduan: this.perilaku_kecanduan,

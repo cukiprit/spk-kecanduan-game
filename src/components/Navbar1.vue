@@ -1,10 +1,11 @@
 <script setup>
 import auth from "@/stores/auth";
-import { RouterView } from "vue-router";
-import { computed, onMounted, onUnmounted } from "vue";
+import { RouterView, useRouter } from "vue-router";
+import { computed } from "vue";
 import { RouterLink } from "vue-router";
+import { jwtDecode } from "jwt-decode";
 
-const routes = [
+const routesAdmin = [
   {
     route: "/kecanduan",
     name: "Kecanduan",
@@ -23,9 +24,34 @@ const routes = [
   },
 ];
 
+const routesUser = [
+  {
+    route: "/prediksi",
+    name: "Prediksi",
+  },
+  {
+    route: "/hasil",
+    name: "Hasil",
+  },
+];
+
 const useAuth = auth();
+const router = useRouter();
 
 const isAuthenticated = computed(() => !!useAuth.token);
+
+const userRole = computed(() => {
+  if (useAuth.token) {
+    const decodedToken = jwtDecode(useAuth.token);
+    return decodedToken.role;
+  }
+  return null;
+});
+
+const handleLogout = () => {
+  router.push("/login");
+  useAuth.logout();
+};
 </script>
 
 <template>
@@ -64,8 +90,9 @@ const isAuthenticated = computed(() => !!useAuth.token);
             <li>
               <RouterLink to="/">Home</RouterLink>
             </li>
+
             <li
-              v-for="route in routes"
+              v-for="route in userRole === 'admin' ? routesAdmin : routesUser"
               :key="route.name"
               v-if="isAuthenticated"
             >
@@ -75,7 +102,7 @@ const isAuthenticated = computed(() => !!useAuth.token);
             </li>
 
             <li v-if="isAuthenticated">
-              <button @click="useAuth.logout">Logout</button>
+              <button @click="handleLogout">Logout</button>
             </li>
 
             <li v-else>
@@ -125,7 +152,12 @@ const isAuthenticated = computed(() => !!useAuth.token);
         <li>
           <RouterLink to="/">Home</RouterLink>
         </li>
-        <li v-for="route in routes" :key="route.name" v-if="isAuthenticated">
+
+        <li
+          v-for="route in userRole === 'admin' ? routesAdmin : routesUser"
+          :key="route.name"
+          v-if="isAuthenticated"
+        >
           <RouterLink :to="route.route">
             {{ route.name }}
           </RouterLink>

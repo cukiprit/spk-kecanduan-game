@@ -5,7 +5,7 @@ const auth = defineStore("auth", {
     username: "",
     password: "",
     confirmPassword: "",
-    token: sessionStorage.getItem("token") || null,
+    token: null,
   }),
   actions: {
     login: async function () {
@@ -23,18 +23,30 @@ const auth = defineStore("auth", {
 
         const result = await response.json();
 
-        this.username = "";
-        this.password = "";
-
         console.log(result);
 
         if (result.token) {
-          sessionStorage.setItem("token", result.token);
+          // sessionStorage.setItem("token", result.token);
+          // this.token = result.token;
+          // window.dispatchEvent(new Event("storage"));
           this.token = result.token;
-          window.dispatchEvent(new Event("storage"));
+          this.saveToken();
         }
       } catch (err) {
         console.error(err.message);
+        return false;
+      }
+    },
+    saveToken: function () {
+      localStorage.setItem("token", this.token);
+    },
+    removeToken: function () {
+      localStorage.removeItem("token");
+    },
+    loadToken: function () {
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.token = token;
       }
     },
     register: async function () {
@@ -60,12 +72,13 @@ const auth = defineStore("auth", {
       }
     },
     logout: function () {
-      sessionStorage.removeItem("token");
       this.token = null;
-      window.dispatchEvent(new Event("storage"));
-      this.username = "";
-      this.password = "";
-      this.confirmPassword = "";
+      this.removeToken();
+      // this.token = null;
+      // window.dispatchEvent(new Event("storage"));
+      // this.username = "";
+      // this.password = "";
+      // this.confirmPassword = "";
     },
   },
 });

@@ -1,5 +1,6 @@
 <script setup>
 import auth from "@/stores/auth";
+import { onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -9,6 +10,11 @@ const login = () => {
   useAuth.login();
   router.push("/");
 };
+
+onUnmounted(() => {
+  useAuth.username = "";
+  useAuth.password = "";
+});
 </script>
 
 <template>

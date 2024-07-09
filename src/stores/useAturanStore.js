@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import auth from "./auth";
 
 const useAturanStore = defineStore("aturan", {
   state: () => ({
@@ -75,13 +76,14 @@ const useAturanStore = defineStore("aturan", {
       }
     },
     async addAturan(data) {
-      const token = sessionStorage.getItem("token");
+      const useAuth = auth();
+
       try {
         const response = await fetch("http://127.0.0.1:3000/aturan", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${useAuth.token}`,
           },
           body: JSON.stringify(data),
         });
@@ -100,7 +102,7 @@ const useAturanStore = defineStore("aturan", {
       }
     },
     async updateAturan(data) {
-      const token = sessionStorage.getItem("token");
+      const useAuth = auth();
 
       try {
         const response = await fetch(
@@ -109,7 +111,7 @@ const useAturanStore = defineStore("aturan", {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${useAuth.token}`,
             },
             body: JSON.stringify(data),
           }
@@ -123,14 +125,15 @@ const useAturanStore = defineStore("aturan", {
       }
     },
     async deleteAturan(kode_kecanduan) {
-      const token = sessionStorage.getItem("token");
+      const useAuth = auth();
+
       try {
         const response = await fetch(
           `http://127.0.0.1:3000/aturan/${kode_kecanduan}`,
           {
             method: "DELETE",
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${useAuth.token}`,
             },
           }
         );

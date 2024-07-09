@@ -1,21 +1,14 @@
 <script setup>
+import { useRouter } from "vue-router";
 import Navbar1 from "./components/Navbar1.vue";
 import auth from "./stores/auth";
 import { onMounted, onUnmounted } from "vue";
 
 const useAuth = auth();
-
-const updateAuthState = () => {
-  useAuth.token = sessionStorage.getItem("token");
-};
+const router = useRouter();
 
 onMounted(() => {
-  updateAuthState();
-  window.addEventListener("storage", updateAuthState);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("storage", updateAuthState);
+  useAuth.loadToken();
 });
 </script>
 

@@ -1,9 +1,7 @@
 <script setup>
 import useQuisionerStore from "@/stores/useQuisionser";
-import { onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { onMounted, onUnmounted } from "vue";
 
-const router = useRouter();
 const store = useQuisionerStore();
 
 onMounted(() => {
@@ -11,12 +9,24 @@ onMounted(() => {
   store.fetchRules();
 });
 
+onUnmounted(() => store.resetForm());
+
 const handleSubmit = async () => {
   await store.calculateResult();
-  router.push({
-    name: "result",
-    query: { highestResult: JSON.stringify(store.highestResult) },
-  });
+
+  const resultData = {
+    tanggal: new Date().toISOString(),
+    skor: store.highestResult.percentage,
+    kode_gejala: Object.keys(store.answers),
+    kode_kecanduan: store.highestResult.kode_kecanduan,
+  };
+
+  await store.saveResult(resultData);
+
+  // router.push({
+  //   name: "result",
+  //   query: { highestResult: JSON.stringify(store.highestResult) },
+  // });
 };
 </script>
 

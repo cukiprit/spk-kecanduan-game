@@ -34,8 +34,8 @@ const routes = [
     component: PrediksiView,
   },
   {
-    path: "/result",
-    name: "result",
+    path: "/hasil",
+    name: "hasil",
     component: ResultView,
     props: true,
   },
@@ -62,7 +62,7 @@ router.beforeEach((to, from, next) => {
   const isAuthenticated = !!authStore.token;
 
   if (to.name !== "login" && !isAuthenticated) {
-    if (to.name === "home") {
+    if (to.name === "home" || to.name === "register") {
       next();
     } else {
       next({ name: "login" });

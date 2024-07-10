@@ -22,6 +22,10 @@ const routesAdmin = [
     route: "/prediksi",
     name: "Prediksi",
   },
+  {
+    route: "/hasil",
+    name: "Hasil",
+  },
 ];
 
 const routesUser = [

@@ -1,8 +1,10 @@
 <script setup>
 import useQuisionerStore from "@/stores/useQuisionser";
 import { onMounted, onUnmounted } from "vue";
+import { useRouter } from "vue-router";
 
 const store = useQuisionerStore();
+const router = useRouter();
 
 onMounted(() => {
   store.fetchQuisioner();
@@ -23,10 +25,7 @@ const handleSubmit = async () => {
 
   await store.saveResult(resultData);
 
-  // router.push({
-  //   name: "result",
-  //   query: { highestResult: JSON.stringify(store.highestResult) },
-  // });
+  router.push("/hasil");
 };
 </script>
 

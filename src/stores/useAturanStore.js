@@ -58,6 +58,8 @@ const useAturanStore = defineStore("aturan", {
       }
     },
     async fetchDetail(kode_kecanduan) {
+      const useAuth = auth();
+
       try {
         const response = await fetch(
           `http://127.0.0.1:3000/aturan/${kode_kecanduan}`,
@@ -66,6 +68,7 @@ const useAturanStore = defineStore("aturan", {
             headers: {
               "Cache-Control": "no-cache",
               pragma: "no-cache",
+              Authorization: `Bearer ${useAuth.token}`,
             },
           }
         );

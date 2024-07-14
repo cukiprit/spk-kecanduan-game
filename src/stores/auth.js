@@ -68,7 +68,7 @@ const auth = defineStore("auth", {
         this.password = "";
         this.confirmPassword = "";
       } catch (err) {
-        consol.error(`Error: ${err.message}`);
+        console.error(`Error: ${err.message}`);
       }
     },
     logout: function () {

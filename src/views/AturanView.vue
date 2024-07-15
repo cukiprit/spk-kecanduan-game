@@ -25,15 +25,19 @@ const openUpdateModal = async (kode_kecanduan) => {
 };
 
 const handleSubmit = () => {
-  const data = {
-    kode_gejala: store.selectedValues,
-    kode_kecanduan: store.selectedDetail.kode_kecanduan,
-  };
-
   if (store.mode === "add") {
-    store.addAturan(data);
+    const addData = {
+      kode_gejala: store.selectedValues,
+      kode_kecanduan: store.selectedDetail.kode_kecanduan,
+    };
+    store.addAturan(addData);
   } else if (store.mode === "update") {
-    store.updateAturan(data);
+    const kode_kecanduan = store.selectedDetail.kode_kecanduan;
+    const updateData = {
+      kode_gejala: store.selectedValues,
+    };
+
+    store.updateAturan(updateData, kode_kecanduan);
   }
 };
 </script>

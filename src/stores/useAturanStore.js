@@ -104,12 +104,14 @@ const useAturanStore = defineStore("aturan", {
         console.error(err.message);
       }
     },
-    async updateAturan(data) {
+    async updateAturan(data, kode_kecanduan) {
       const useAuth = auth();
+
+      console.log(data);
 
       try {
         const response = await fetch(
-          `http://127.0.0.1:3000/aturan/${data.kode_kecanduan}`,
+          `http://127.0.0.1:3000/aturan/${kode_kecanduan}`,
           {
             method: "PUT",
             headers: {

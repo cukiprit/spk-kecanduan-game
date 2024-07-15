@@ -104,6 +104,12 @@ const useQuisionerStore = defineStore("quisioner", {
         if (!response.ok) {
           throw new Error("Failed to save result!");
         }
+
+        // const data = await response.json();
+
+        // console.log(data);
+
+        // return data;
       } catch (err) {
         console.error(`Error: ${err.message}`);
       }
@@ -131,12 +137,7 @@ const useQuisionerStore = defineStore("quisioner", {
       return this.quisioner.slice(start, end);
     },
     resetForm() {
-      this.quisioner = [];
-      this.aturan = [];
-      this.answer = [];
-      this.currentPart = 0;
-      this.result = [];
-      this.highestResult = null;
+      this.$reset(); // Reset the state to its initial values
     },
   },
 });

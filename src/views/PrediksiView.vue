@@ -5,7 +5,6 @@ import { useRouter } from "vue-router";
 
 const store = useQuisionerStore();
 const router = useRouter();
-
 onMounted(() => {
   store.fetchQuisioner();
   store.fetchRules();
@@ -26,7 +25,7 @@ const handleSubmit = async () => {
   router.push("/hasil");
 };
 
-onBeforeUnmount(() => store.resetForm());
+onUnmounted(() => store.resetForm());
 </script>
 
 <template>

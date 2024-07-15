@@ -34,7 +34,12 @@ const saveResultAsPDF = (id) => {
   let yOffset = 1;
 
   addText("Hasil Konsultasi", 1, yOffset, 24, true);
-  yOffset += 1;
+  yOffset += 0.2;
+
+  doc.setLineWidth(0.01);
+  const pageWidth = doc.internal.pageSize.getWidth();
+  doc.line(1, yOffset, pageWidth - 1, yOffset); // Adjusting x1, y1, x2, y2
+  yOffset += 0.4;
 
   addText(
     `Tanggal Konsultasi: ${moment(selectedResult.tanggal).format(

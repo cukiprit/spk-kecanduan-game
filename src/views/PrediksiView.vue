@@ -1,6 +1,6 @@
 <script setup>
 import useQuisionerStore from "@/stores/useQuisionser";
-import { onMounted, onUnmounted } from "vue";
+import { onBeforeUnmount, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 
 const store = useQuisionerStore();
@@ -10,8 +10,6 @@ onMounted(() => {
   store.fetchQuisioner();
   store.fetchRules();
 });
-
-onUnmounted(() => store.resetForm());
 
 const handleSubmit = async () => {
   await store.calculateResult();
@@ -27,6 +25,8 @@ const handleSubmit = async () => {
 
   router.push("/hasil");
 };
+
+onBeforeUnmount(() => store.resetForm());
 </script>
 
 <template>

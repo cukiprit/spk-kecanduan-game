@@ -31,21 +31,28 @@ const saveResultAsPDF = (id) => {
       x = (pageWidth - textWidth) / 2;
     }
 
-    const textLines = doc.splitTextToSize(text, pageWidth - x - 1); // 1 inch margin
+    const textLines = doc.splitTextToSize(text, pageWidth - 1); // 1 inch margin
     textLines.forEach((line, index) => {
-      doc.text(line, x, y + index * size * 0.4); // Adjust line height
+      const newY = y + index * size * 0.4;
+      // doc.text(line, x, y + index * size * 0.4); // Adjust line height
+      if (newY > doc.internal.pageSize.getHeight() - 1) {
+        doc.addPage();
+        y = 1;
+      }
+      doc.text(line, x, newY); // Adjust line height
     });
+    return y + textLines.length * size * 0.4;
   };
 
   let yOffset = 1;
 
   addText("Hasil Konsultasi", 1, yOffset, 24, true, true);
-  yOffset += 0.2;
+  yOffset += 0.5;
 
   doc.setLineWidth(0.01);
   const pageWidth = doc.internal.pageSize.getWidth();
   doc.line(1, yOffset, pageWidth - 1, yOffset); // Adjusting x1, y1, x2, y2
-  yOffset += 0.4;
+  yOffset += 0.5;
 
   addText(
     `Tanggal Konsultasi: ${moment(selectedResult.tanggal).format(
@@ -54,40 +61,48 @@ const saveResultAsPDF = (id) => {
     1,
     yOffset
   );
-  yOffset += 0.5;
+  yOffset += 0.2;
 
   addText(`Nama User: ${selectedResult.username}`, 1, yOffset);
-  yOffset += 0.5;
+  yOffset += 0.2;
 
   addText(`Skor: ${selectedResult.skor.toFixed(2)}`, 1, yOffset);
-  yOffset += 0.5;
+  yOffset += 0.2;
 
   addText(`Kode Kecanduan: ${selectedResult.kode_kecanduan}`, 1, yOffset);
-  yOffset += 0.5;
+  yOffset += 0.2;
 
   addText(
     `Perilaku Kecanduan: ${selectedResult.perilaku_kecanduan}`,
     1,
     yOffset
   );
-  yOffset += 0.5;
+  yOffset += 0.2;
+
+  doc.text(`Solusi: ${selectedResult.solusi}`, 1, yOffset, {
+    maxWidth: 5,
+  });
+  yOffset += 0.8;
 
   addText("Kode Gejala", 1, yOffset, 20, true);
   yOffset += 0.5;
 
   const kodeGejalaArray = selectedResult.kode_gejala.split(",");
-  kodeGejalaArray.forEach((kode, index) => {
-    addText(`${index + 1}. ${kode.trim()}`, 1, yOffset);
-    yOffset += 0.5;
-  });
+  addText(`Kode Gejala: ${kodeGejalaArray.join(", ")}`, 1, yOffset);
+  // addText(kodeGejalaArray.join("\n"), 1, yOffset);
+  yOffset += 0.5;
+  // kodeGejalaArray.forEach((kode, index) => {
+  //   addText(`${index + 1}. ${kode.trim()}`, 1, yOffset);
+  //   yOffset += 0.5;
+  // });
 
   addText("Nama Gejala", 1, yOffset, 20, true);
-  yOffset += 0.5;
+  yOffset += 0.2;
 
   const namaGejalaArray = selectedResult.nama_gejala.split(",");
   namaGejalaArray.forEach((gejala, index) => {
     addText(`${index + 1}. ${gejala.trim()}`, 1, yOffset);
-    yOffset += 0.5;
+    yOffset += 0.2;
   });
 
   doc.save(`Konsultasi_${selectedResult.username}.pdf`);

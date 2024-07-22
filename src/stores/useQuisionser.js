@@ -5,7 +5,7 @@ const useQuisionerStore = defineStore("quisioner", {
   state: () => ({
     quisioner: [],
     aturan: [],
-    answers: [],
+    answers: {},
     currentPart: 0,
     result: [],
     highestResult: null,
@@ -23,6 +23,9 @@ const useQuisionerStore = defineStore("quisioner", {
 
         const result = await response.json();
         this.quisioner = result.data;
+
+        // Log to check if quisioner is populated correctly
+        console.log("Fetched quisioner:", this.quisioner);
       } catch (err) {
         console.error(`Error: ${err.message}`);
       }
@@ -39,6 +42,9 @@ const useQuisionerStore = defineStore("quisioner", {
 
         const result = await response.json();
         this.aturan = result.data;
+
+        // Log to check if aturan is populated correctly
+        console.log("Fetched aturan:", this.aturan);
       } catch (err) {
         console.error(`Error: ${err.message}`);
       }
@@ -63,24 +69,35 @@ const useQuisionerStore = defineStore("quisioner", {
       this.answers[kode_gejala] = answer;
     },
     async calculateResult() {
+      await this.fetchQuisioner(); // Ensure quisioner is fetched before calculation
+      await this.fetchRules(); // Ensure rules are fetched before calculation
+
       const solutions = await this.fetchSolutions();
-      const result = this.aturan.map((rule) => {
-        const totalGejala = rule.kode_gejala.length;
-        const matchedGejala = rule.kode_gejala.filter(
-          (gejala) => this.answers[gejala] === "yes"
-        ).length;
+      const result = this.aturan
+        .map((rule) => {
+          // Ensure rule.kode_gejala is an array
+          if (!Array.isArray(rule.kode_gejala)) {
+            console.error(`Invalid kode_gejala in rule:`, rule);
+            return null;
+          }
 
-        const solution = solutions.find(
-          (s) => s.kode_kecanduan === rule.kode_kecanduan
-        );
+          const totalGejala = rule.kode_gejala.length;
+          const matchedGejala = rule.kode_gejala.filter(
+            (gejala) => this.answers[gejala] === "yes"
+          ).length;
 
-        return {
-          kode_kecanduan: rule.kode_kecanduan,
-          perilaku_kecanduan: rule.perilaku_kecanduan,
-          percentage: (matchedGejala / totalGejala) * 100,
-          solusi: solution ? solution.solusi : "Tidak Ada Solusi",
-        };
-      });
+          const solution = solutions.find(
+            (s) => s.kode_kecanduan === rule.kode_kecanduan
+          );
+
+          return {
+            kode_kecanduan: rule.kode_kecanduan,
+            perilaku_kecanduan: rule.perilaku_kecanduan,
+            percentage: (matchedGejala / totalGejala) * 100,
+            solusi: solution ? solution.solusi : "Tidak Ada Solusi",
+          };
+        })
+        .filter((res) => res !== null); // Filter out any null results
 
       this.result = result;
       this.highestResult = result.reduce(
@@ -104,18 +121,12 @@ const useQuisionerStore = defineStore("quisioner", {
         if (!response.ok) {
           throw new Error("Failed to save result!");
         }
-
-        // const data = await response.json();
-
-        // console.log(data);
-
-        // return data;
       } catch (err) {
         console.error(`Error: ${err.message}`);
       }
     },
     nextPart() {
-      if (this.currentPart < Math.ceil(this.quisioner.length / 7) - 1) {
+      if (this.currentPart < this.quisioner.length - 1) {
         this.currentPart++;
       }
     },
@@ -125,16 +136,21 @@ const useQuisionerStore = defineStore("quisioner", {
       }
     },
     isCurrentPartFilled() {
-      const start = this.currentPart * 7;
-      const end = start + 7;
-      return this.quisioner
-        .slice(start, end)
-        .every((q) => this.answers[q.kode_gejala] !== undefined);
+      const question = this.quisioner[this.currentPart];
+      // Add check to ensure question exists and has kode_gejala
+      if (!question || !question.kode_gejala) {
+        console.error("Invalid current part question:", question);
+        return false;
+      }
+      return this.answers[question.kode_gejala] !== undefined;
     },
     currentPartQuestions() {
-      const start = this.currentPart * 7;
-      const end = start + 7;
-      return this.quisioner.slice(start, end);
+      // Add check to ensure currentPart is within bounds
+      if (this.currentPart >= this.quisioner.length) {
+        console.error("Current part out of bounds:", this.currentPart);
+        return [];
+      }
+      return [this.quisioner[this.currentPart]];
     },
     resetForm() {
       this.$reset(); // Reset the state to its initial values

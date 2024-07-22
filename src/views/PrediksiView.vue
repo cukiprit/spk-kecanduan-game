@@ -1,10 +1,11 @@
 <script setup>
 import useQuisionerStore from "@/stores/useQuisionser";
-import { onBeforeUnmount, onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 
 const store = useQuisionerStore();
 const router = useRouter();
+
 onMounted(() => {
   store.fetchQuisioner();
   store.fetchRules();
@@ -16,7 +17,7 @@ const handleSubmit = async () => {
   const resultData = {
     tanggal: new Date().toISOString(),
     skor: store.highestResult.percentage,
-    kode_gejala: Object.keys(store.answers),
+    // kode_gejala: Object.keys(store.answers),
     kode_kecanduan: store.highestResult.kode_kecanduan,
   };
 
@@ -74,7 +75,7 @@ onUnmounted(() => store.resetForm());
         Previous
       </button>
       <button
-        v-if="store.currentPart < Math.ceil(store.quisioner.length / 7) - 1"
+        v-if="store.currentPart < store.quisioner.length - 1"
         class="btn btn-primary"
         @click="store.nextPart"
         :disabled="!store.isCurrentPartFilled()"
@@ -82,7 +83,7 @@ onUnmounted(() => store.resetForm());
         Next
       </button>
       <button
-        v-if="store.currentPart === Math.ceil(store.quisioner.length / 7) - 1"
+        v-if="store.currentPart === store.quisioner.length - 1"
         class="btn btn-primary"
         @click="handleSubmit"
         :disabled="!store.isCurrentPartFilled()"

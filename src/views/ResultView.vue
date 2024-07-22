@@ -17,7 +17,7 @@ const saveResultAsPDF = (id) => {
     orientation: "portrait",
   });
 
-  const addText = (text, x, y, size = 12, bold = false) => {
+  const addText = (text, x, y, size = 12, bold = false, centered = false) => {
     if (bold) {
       doc.setFont(undefined, "bold");
     } else {
@@ -25,6 +25,12 @@ const saveResultAsPDF = (id) => {
     }
     doc.setFontSize(size);
     const pageWidth = doc.internal.pageSize.getWidth();
+
+    if (centered) {
+      const textWidth = doc.getTextWidth(text);
+      x = (pageWidth - textWidth) / 2;
+    }
+
     const textLines = doc.splitTextToSize(text, pageWidth - x - 1); // 1 inch margin
     textLines.forEach((line, index) => {
       doc.text(line, x, y + index * size * 0.4); // Adjust line height
@@ -33,7 +39,7 @@ const saveResultAsPDF = (id) => {
 
   let yOffset = 1;
 
-  addText("Hasil Konsultasi", 1, yOffset, 24, true);
+  addText("Hasil Konsultasi", 1, yOffset, 24, true, true);
   yOffset += 0.2;
 
   doc.setLineWidth(0.01);
@@ -66,11 +72,23 @@ const saveResultAsPDF = (id) => {
   );
   yOffset += 0.5;
 
-  addText(`Kode Gejala: ${selectedResult.kode_gejala}`, 1, yOffset);
+  addText("Kode Gejala", 1, yOffset, 20, true);
   yOffset += 0.5;
 
-  addText(`Nama Gejala: ${selectedResult.nama_gejala}`, 1, yOffset);
+  const kodeGejalaArray = selectedResult.kode_gejala.split(",");
+  kodeGejalaArray.forEach((kode, index) => {
+    addText(`${index + 1}. ${kode.trim()}`, 1, yOffset);
+    yOffset += 0.5;
+  });
+
+  addText("Nama Gejala", 1, yOffset, 20, true);
   yOffset += 0.5;
+
+  const namaGejalaArray = selectedResult.nama_gejala.split(",");
+  namaGejalaArray.forEach((gejala, index) => {
+    addText(`${index + 1}. ${gejala.trim()}`, 1, yOffset);
+    yOffset += 0.5;
+  });
 
   doc.save(`Konsultasi_${selectedResult.username}.pdf`);
 };
